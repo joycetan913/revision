@@ -15,6 +15,7 @@ public class readCSV {
         String outputFile = "output.txt";
 
         Map<String, Customer> customerMap = new HashMap<>();
+        Map<String, Integer> countryCountMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
             String line;
@@ -41,7 +42,29 @@ public class readCSV {
                 );
 
                 customerMap.putIfAbsent(customer.getCustomerId(), customer);
+
+                 // Count occurrences of each country
+                 countryCountMap.put(customer.getCountry(), countryCountMap.getOrDefault(customer.getCountry(), 0) + 1);
+                
             }
+        // Find the country with the highest count
+        String highestCountry = null;
+        int highestCount = 0;
+        
+        for (Map.Entry<String, Integer> entry : countryCountMap.entrySet()) {
+            if (entry.getValue() > highestCount) {
+                highestCount = entry.getValue();
+                highestCountry = entry.getKey();
+            }
+        }
+        
+        // Output the country with the highest count
+        if (highestCountry != null) {
+            System.out.println("Country with highest occurrence: " + highestCountry + " with count: " + highestCount);
+        } else {
+            System.out.println("No data found.");
+        }
+        
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
