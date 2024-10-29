@@ -9,11 +9,9 @@ import java.io.FileNotFoundException;
 
 public class readCSV {
 
-    public static void main(String[] args) throws IOException, FileNotFoundException{
-        
-        String inputFile = args[0];
-        String outputFile = "output.txt";
+    public static void main(String[] args) {
 
+        String inputFile = args[0];
         Map<String, Customer> customerMap = new HashMap<>();
         Map<String, Integer> countryCountMap = new HashMap<>();
 
@@ -43,30 +41,33 @@ public class readCSV {
 
                 customerMap.putIfAbsent(customer.getCustomerId(), customer);
 
-                 // Count occurrences of each country
-                 countryCountMap.put(customer.getCountry(), countryCountMap.getOrDefault(customer.getCountry(), 0) + 1);
-                
+                // Count occurrences of each country
+                String country = customer.getCountry();
+                int currentCount = countryCountMap.getOrDefault(country, 0);
+                currentCount++;
+                countryCountMap.put(country, currentCount);
             }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return; // Exit if there's an error reading the file
+        }
+
         // Find the country with the highest count
         String highestCountry = null;
         int highestCount = 0;
-        
+
         for (Map.Entry<String, Integer> entry : countryCountMap.entrySet()) {
             if (entry.getValue() > highestCount) {
                 highestCount = entry.getValue();
                 highestCountry = entry.getKey();
             }
         }
-        
+
         // Output the country with the highest count
         if (highestCountry != null) {
             System.out.println("Country with highest occurrence: " + highestCountry + " with count: " + highestCount);
         } else {
             System.out.println("No data found.");
-        }
-        
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
         }
 
         // Example of retrieving a customer
